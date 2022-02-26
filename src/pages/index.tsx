@@ -1,6 +1,6 @@
 /* istanbul ignore file */
-import Main from 'components/Main'
+import { HomePage, FirstTimeScreen } from 'screens';
 
 export default function Home() {
-  return <Main />
+  return <FirstTimeScreen />;
 }
