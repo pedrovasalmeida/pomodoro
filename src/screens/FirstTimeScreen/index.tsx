@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import Link from 'next/link';
 
 import {
   Container,
-  Button,
   ButtonWrapper,
   DescriptionWrapper,
   InputWrapper,
@@ -10,12 +11,31 @@ import {
   InputLabel,
   Text,
   Title,
+  NameTitle,
 } from './styles';
+import CustomButton from 'components/CustomButton';
 
 export default function FirstTimeScreen() {
+  const [welcomeUserName, setWelcomeUserName] = useState('');
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const saveUserNameIntoLocalStorage = (name: string) => {
+    if (window) {
+      window.localStorage.setItem('@POMODORO.Username', name);
+    }
+  };
+
+  useEffect(() => {
+    if (inputRef?.current!.value?.length < 1) {
+      setWelcomeUserName('Honey');
+    }
+  }, [welcomeUserName]);
+
   return (
     <Container>
-      <Title>Welcome, Honey.</Title>
+      <Title>Welcome, </Title>
+      <NameTitle>{welcomeUserName || 'Honey'}.</NameTitle>
       <DescriptionWrapper>
         <Text>Is your first time here. Enjoy!</Text>
         <Text>
@@ -25,11 +45,32 @@ export default function FirstTimeScreen() {
       </DescriptionWrapper>
       <InputWrapper>
         <InputLabel>Please, insert an name or nickname.</InputLabel>
-        <Input />
+        <Input
+          ref={inputRef}
+          maxLength={12}
+          onChange={(e) =>
+            inputRef?.current!.value.length <= 12 &&
+            setWelcomeUserName(e.target.value)
+          }
+        />
       </InputWrapper>
 
       <ButtonWrapper>
-        <Button>Go to timer</Button>
+        <Link href={'/timer'} passHref>
+          <CustomButton
+            disabled={
+              inputRef.current ? inputRef.current.value.length < 1 : false
+            }
+            onClick={() => {
+              if (inputRef.current && inputRef.current.value.length > 1) {
+                setWelcomeUserName(inputRef?.current?.value || 'Honey');
+                saveUserNameIntoLocalStorage(inputRef.current.value);
+              }
+            }}
+          >
+            Go to timer
+          </CustomButton>
+        </Link>
       </ButtonWrapper>
     </Container>
   );

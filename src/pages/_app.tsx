@@ -6,6 +6,9 @@ import { ThemeProvider } from 'styled-components';
 
 import { DarkTheme } from 'styles/theme';
 import GlobalStyles from 'styles/global';
+import NextNProgress from 'nextjs-progressbar';
+import RouteProgressBar from 'components/RouteProgressBar';
+import { TimerProvider } from 'hooks/useTimer';
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -21,8 +24,11 @@ function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <ThemeProvider theme={DarkTheme}>
-        <GlobalStyles />
-        <Component {...pageProps} />
+        <TimerProvider>
+          <GlobalStyles />
+          <RouteProgressBar />
+          <Component {...pageProps} />
+        </TimerProvider>
       </ThemeProvider>
     </>
   );
